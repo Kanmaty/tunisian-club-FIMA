@@ -7,7 +7,7 @@ import "./App.css"; // アプリ全体のスタイル
 function App() {
   return (
     <div className="App">
-      <h1>チュニジアン同好会 麻雀世界ランキング（FIMA）</h1>
+      <h1>チュニジアン同好会<br />麻雀世界ランキング（FIMA）</h1>
       <h2>Federation of International tunisian club Mahjong Associations</h2>
       {/* 順位表 */}
       <RankingTable />

@@ -97,7 +97,7 @@ const GameHistory = () => {
                   <div style={{ fontWeight: "bold", fontSize: "1.0em" }}>{game.title || "(タイトルなし)"}</div>
                   <div style={{ fontSize: "0.85em", color: "#666", marginTop: "2px" }}>{formatGameDate(game.gameDate)}</div>
                 </td>
-                {/* 人数セル */}
+                {/* 人数セル
                 <td>
                   <span
                     style={{
@@ -110,7 +110,7 @@ const GameHistory = () => {
                   >
                     {game.gameMode}人
                   </span>
-                </td>
+                </td> */}
                 {/* 各プレイヤーのスコアセル */}
                 {players.map((player) => {
                   const { rank, score } = getPlayerResult(game, player.id);
