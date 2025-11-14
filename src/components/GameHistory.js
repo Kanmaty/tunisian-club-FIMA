@@ -82,7 +82,7 @@ const GameHistory = () => {
             <tr>
               {/* 左端：開催日とタイトル */}
               <th style={{ minWidth: "180px", textAlign: "left" }}>開催日 / タイトル</th>
-              <th style={{ width: "60px" }}>人数</th>
+              {/* <th style={{ width: "60px" }}>人数</th> */}
               {/* 各プレイヤーの列 */}
               {players.map((player) => (
                 <th key={player.id}>{player.name}</th>
