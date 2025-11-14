@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import RankingTable from "./components/RankingTable";
+import GameResultForm from "./components/GameResultForm";
+import GameHistory from "./components/GameHistory";
+import "./App.css"; // アプリ全体のスタイル
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>チュニジアン同好会 麻雀世界ランキング（FIMA）</h1>
+      <h2>Federation of International tunisian club Mahjong Associations</h2>
+      {/* 順位表 */}
+      <RankingTable />
+
+      <hr />
+
+      {/* 対局履歴 */}
+      <GameHistory />
+
+      <hr />
+
+      {/* 戦績入力フォーム */}
+      <GameResultForm />
     </div>
   );
 }

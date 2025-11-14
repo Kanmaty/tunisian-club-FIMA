@@ -1,0 +1,69 @@
+/* src/components/RankingTable.css */
+
+/* 全体を囲むコンテナ（中央寄せ・カード風） */
+.ranking-container {
+  max-width: 900px; /* 横幅の制限 */
+  margin: 40px auto; /* 上下40px、左右自動（中央寄せ） */
+  background-color: #ffffff;
+  border-radius: 12px; /* 角丸 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* 柔らかい影 */
+  overflow: hidden; /* 角丸からはみ出た部分を隠す */
+  padding: 20px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.ranking-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* テーブル本体 */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  min-width: 400px;
+}
+
+/* テーブルヘッダー */
+.styled-table thead tr {
+  background-color: #009879; /* 麻雀らしい緑、または好みの色に変更可 */
+  color: #ffffff;
+  text-align: center;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+  text-align: center; /* 文字を中央寄せ */
+}
+
+/* 行のデザイン */
+.styled-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+/* 偶数行の色を変える（ストライプ） */
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+/* 最後の行の線を消す */
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+/* ホバー時のエフェクト */
+.styled-table tbody tr:hover {
+  background-color: #e0f7fa;
+  cursor: default;
+  transition: background-color 0.2s ease;
+}
+
+/* 1位、2位、3位の強調（オプション） */
+.rank-1 { font-weight: bold; color: #d4af37; } /* 金 */
+.rank-2 { font-weight: bold; color: #a0a0a0; } /* 銀 */
+.rank-3 { font-weight: bold; color: #cd7f32; } /* 銅 */

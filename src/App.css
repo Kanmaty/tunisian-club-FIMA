@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+/* src/App.css の末尾に追加 */
+
+body {
+  background-color: #f4f7f6; /* 背景を少しグレーにしてカードを目立たせる */
+  margin: 0;
+}
+
+.navbar {
+  background-color: #333;
+  padding: 15px;
+  text-align: center;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 20px;
+  font-size: 18px;
+}
+
+.nav-link:hover {
+  color: #009879; /* ホバー時に緑色 */
+}
