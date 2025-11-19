@@ -225,7 +225,7 @@ const GameResultForm = () => {
       >
         <label style={{ marginRight: "15px", cursor: "pointer" }}>
           <input type="radio" checked={gameMode === 4} onChange={() => handleModeChange(4)} />
-          4人打ち (1人見学)
+          4人打ち
         </label>
         <label style={{ cursor: "pointer" }}>
           <input type="radio" checked={gameMode === 5} onChange={() => handleModeChange(5)} />
