@@ -2,6 +2,7 @@ import React from "react";
 import RankingTable from "./components/RankingTable";
 import GameResultForm from "./components/GameResultForm";
 import GameHistory from "./components/GameHistory";
+import ScoreGraph from "./components/ScoreGraph";
 import "./App.css"; // アプリ全体のスタイル
 
 function App() {
@@ -16,6 +17,11 @@ function App() {
 
       {/* 対局履歴 */}
       <GameHistory />
+
+      <hr />
+
+      {/* スコアグラフ */}
+      <ScoreGraph />
 
       <hr />
 
