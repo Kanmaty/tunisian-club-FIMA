@@ -2,69 +2,76 @@ import React, { useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { collection, query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import "./RankingTable.css"; // コンテナのスタイルを流用
+import "./RankingTable.css";
 
 const ScoreGraph = () => {
   const [graphData, setGraphData] = useState([]);
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // グラフ用のカラーパレット
   const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#0088fe"];
 
   useEffect(() => {
     const fetchData = async () => {
-      // 1. プレイヤー一覧を取得
-      const playersQuery = query(collection(db, "players"), orderBy("name", "asc"));
-      const playersSnap = await getDocs(playersQuery);
-      const playersData = playersSnap.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
-      }));
-      setPlayers(playersData);
+      try {
+        const playersQuery = query(collection(db, "players"), orderBy("name", "asc"));
+        const playersSnap = await getDocs(playersQuery);
+        const playersData = playersSnap.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+        }));
+        setPlayers(playersData);
 
-      // 2. 対局履歴を取得（古い順に取得して累積計算を行う）
-      const q = query(collection(db, "games"), orderBy("gameDate", "asc"), orderBy("createdAt", "asc"));
+        // インデックスエラー回避のため gameDate のみで取得し、メモリ内でソート
+        const q = query(collection(db, "games"), orderBy("gameDate", "asc"));
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const games = snapshot.docs.map((doc) => doc.data());
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          let games = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          }));
 
-        // 累積スコアの計算
-        let cumulativeScores = {};
-        playersData.forEach((p) => {
-          cumulativeScores[p.id] = 0;
-        });
-
-        // 初期状態（0点）をデータに含める
-        const data = [
-          {
-            name: "開始",
-            ...Object.fromEntries(playersData.map((p) => [p.name, 0])),
-          },
-        ];
-
-        // 各対局を回して累積値を更新
-        games.forEach((game, index) => {
-          const entry = { name: `第${index + 1}回` };
-
-          playersData.forEach((p) => {
-            // その対局の参加者からスコアを探す
-            const result = game.results.find((r) => r.playerId === p.id);
-            if (result) {
-              cumulativeScores[p.id] += Number(result.score);
-            }
-            // 参加していない（見学）場合は前回の累積値を維持
-            entry[p.name] = cumulativeScores[p.id];
+          // JavaScript側で作成日時順にソートを補完
+          games.sort((a, b) => {
+            if (a.gameDate !== b.gameDate) return 0;
+            const timeA = a.createdAt?.seconds || 0;
+            const timeB = b.createdAt?.seconds || 0;
+            return timeA - timeB;
           });
 
-          data.push(entry);
+          let cumulativeScores = {};
+          playersData.forEach((p) => {
+            cumulativeScores[p.id] = 0;
+          });
+
+          const data = [
+            {
+              name: "開始",
+              ...Object.fromEntries(playersData.map((p) => [p.name, 0])),
+            },
+          ];
+
+          games.forEach((game, index) => {
+            const entry = { name: `第${index + 1}回` };
+            playersData.forEach((p) => {
+              const result = game.results?.find((r) => r.playerId === p.id);
+              if (result) {
+                cumulativeScores[p.id] += Number(result.score);
+              }
+              entry[p.name] = cumulativeScores[p.id];
+            });
+            data.push(entry);
+          });
+
+          setGraphData(data);
+          setLoading(false);
         });
 
-        setGraphData(data);
+        return unsubscribe;
+      } catch (err) {
+        console.error("Fetch Error:", err);
         setLoading(false);
-      });
-
-      return unsubscribe;
+      }
     };
 
     fetchData();
@@ -78,34 +85,63 @@ const ScoreGraph = () => {
     );
   }
 
+  // データの数に応じてグラフの横幅を動的に計算する（1データあたり約80px、最低800px）
+  const chartMinWidth = Math.max(800, graphData.length * 80);
+
   return (
     <div className="ranking-container">
       <h2 className="ranking-title">戦績推移グラフ</h2>
-      <div style={{ width: "100%", height: 400, marginTop: "20px" }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={graphData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 12 }} interval={0} />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip
-              contentStyle={{ backgroundColor: "rgba(255, 255, 255, 0.9)", borderRadius: "8px", border: "none", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}
-            />
-            <Legend verticalAlign="top" height={36} />
-            {players.map((player, index) => (
-              <Line
-                key={player.id}
-                type="monotone"
-                dataKey={player.name}
-                stroke={COLORS[index % COLORS.length]}
-                strokeWidth={3}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-                animationDuration={1500}
+
+      {/* 外側のコンテナ: スクロールを許可する */}
+      <div 
+        className="custom-scrollbar"
+        style={{ 
+          overflowX: "auto", 
+          width: "100%", 
+          WebkitOverflowScrolling: "touch",
+          paddingBottom: "10px"
+        }}
+      >
+        {/* 内側のコンテナ: 最小幅を指定して圧縮を防ぐ */}
+        <div style={{ width: "100%", minWidth: `${chartMinWidth}px`, height: 400, marginTop: "20px" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={graphData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              {/* 垂直の補助線を表示するため vertical={true} */}
+              <CartesianGrid strokeDasharray="3 3" vertical={true} stroke="#eee" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: 12, fill: "#666" }} 
+                interval={0} 
+                dy={10}
               />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
+              <YAxis tick={{ fontSize: 12, fill: "#666" }} />
+              <Tooltip
+                contentStyle={{ 
+                  backgroundColor: "rgba(255, 255, 255, 0.95)", 
+                  borderRadius: "8px", 
+                  border: "1px solid #ddd", 
+                  boxShadow: "0 2px 10px rgba(0,0,0,0.1)" 
+                }}
+              />
+              <Legend verticalAlign="top" height={36} iconType="circle" />
+              {players.map((player, index) => (
+                <Line
+                  key={player.id}
+                  type="linear" // 直線の折れ線に変更
+                  dataKey={player.name}
+                  stroke={COLORS[index % COLORS.length]}
+                  strokeWidth={3}
+                  dot={{ r: 5, strokeWidth: 2, fill: "#fff" }}
+                  activeDot={{ r: 7 }}
+                  animationDuration={1500}
+                  connectNulls
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
+
       <style
         dangerouslySetInnerHTML={{
           __html: `
