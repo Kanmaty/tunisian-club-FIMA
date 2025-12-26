@@ -36,10 +36,8 @@ const RankingTable = () => {
   return (
     <div className="ranking-container">
       <h2 className="ranking-title">総合順位表</h2>
-      {/* --- ↓↓ 修正箇所 ↓↓ --- */}
       {/* テーブルが横にはみ出た場合にスクロールできるようにするdivラッパー */}
-      <div style={{ overflowX: "auto", width: "100%" }}>
-        {/* --- ↑↑ 修正箇所 ↑↑ --- */}
+      <div style={{ overflowX: "auto" }}>
 
         <table className="styled-table">
           <thead>
