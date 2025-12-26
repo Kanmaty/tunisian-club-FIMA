@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/tunisian-club-FIMA/static/css/main.ec6047e9.css",
-    "main.js": "/tunisian-club-FIMA/static/js/main.eb91f532.js",
+    "main.js": "/tunisian-club-FIMA/static/js/main.94c958b2.js",
     "static/js/453.3a745ac0.chunk.js": "/tunisian-club-FIMA/static/js/453.3a745ac0.chunk.js",
     "index.html": "/tunisian-club-FIMA/index.html",
     "main.ec6047e9.css.map": "/tunisian-club-FIMA/static/css/main.ec6047e9.css.map",
-    "main.eb91f532.js.map": "/tunisian-club-FIMA/static/js/main.eb91f532.js.map",
+    "main.94c958b2.js.map": "/tunisian-club-FIMA/static/js/main.94c958b2.js.map",
     "453.3a745ac0.chunk.js.map": "/tunisian-club-FIMA/static/js/453.3a745ac0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ec6047e9.css",
-    "static/js/main.eb91f532.js"
+    "static/js/main.94c958b2.js"
   ]
 }
