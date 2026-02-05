@@ -35,7 +35,7 @@ const OpeningMovie = ({ onFinish }) => {
         justifyContent: "center",
       }}
     >
-      <video autoPlay muted playsInline onEnded={handleComplete} style={{ width: "100%", height: "100%", objectFit: "cover" }}>
+      <video autoPlay muted playsInline onEnded={handleComplete} style={{ width: "100%", height: "100%", objectFit: "contain" }}>
         <source src={fimaMovie} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
